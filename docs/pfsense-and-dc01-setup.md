@@ -27,7 +27,7 @@ Z840 host has a vNIC on SEG-MGMT at `10.10.30.5` for web-UI access.
       OPT1 10.10.10.1/24; OPT2 10.10.40.1/24 (no gateway on internal legs)
 - [ ] Host: `New-NetIPAddress -InterfaceAlias "vEthernet (SEG-MGMT)" -IPAddress 10.10.30.5 -PrefixLength 24`
 - [ ] Browse https://10.10.30.1, admin/pfsense, run wizard, set strong password
-- [ ] WAN wizard: **uncheck** "Block RFC1918" (WAN is a private LAN)
+- [ ] WAN wizard: uncheck "Block RFC1918" (WAN is a private LAN)
 - [ ] Rename OPT1→CUI, OPT2→INFRA (Interfaces → Assignments)
 - [ ] DHCP per segment, pool .100–.150 (Services → DHCP Server)
 
@@ -36,8 +36,8 @@ Z840 host has a vNIC on SEG-MGMT at `10.10.30.5` for web-UI access.
 Symptom: DC01 (10.10.40.10) could not ping/reach gateway 10.10.40.1. Interface
 "up", DC01 on correct switch, IP config correct, MACs matched (no swap).
 
-Root cause: the **INFRA firewall pass rule was malformed / not applied**. The
-tell was **Status → Interfaces → INFRA** showing a climbing **block** counter
+Root cause: the INFRA firewall pass rule was malformed / not applied. The
+tell was Status → Interfaces → INFRA showing a climbing block counter
 (e.g. 898 blocked in) while pass stayed near zero — proof traffic arrived and was
 dropped by the firewall, not lost on the network.
 
