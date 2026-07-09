@@ -1,4 +1,4 @@
-# pfSense + DC01 Build Log (Option A, no managed switch)
+# pfSense + DC01 Build Log 
 
 As-built checklist for the boundary firewall and the first domain controller,
 including the gotchas hit during the build. Segments are Hyper-V internal
