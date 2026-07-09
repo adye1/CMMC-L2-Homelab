@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CMMC L2 GRC Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0E141F; --surface:#161E2C; --surface-2:#1E293B; --line:#2A3648;
+    --text:#E7ECF3; --muted:#8B97AC; --faint:#5D6A80;
+    --met:#46B98A; --partial:#E2A94B; --gap:#E0605A;
+    --cui:#9B6DDF; --cui-deep:#6D3FB0;
+    --display:'Space Grotesk',sans-serif; --body:'Inter',sans-serif; --mono:'JetBrains Mono',monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--ink);color:var(--text);font-family:var(--body);
+    line-height:1.5;-webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(circle at 20% -10%,rgba(109,63,176,.10),transparent 45%);
+    min-height:100vh}
+  .wrap{max-width:1140px;margin:0 auto;padding:0 20px 64px}
+
+  /* CUI banner */
+  .cui-bar{display:flex;align-items:center;gap:14px;justify-content:center;
+    background:var(--cui-deep);color:#F3ECFF;font-family:var(--mono);
+    font-size:12px;letter-spacing:.12em;font-weight:500;padding:6px 12px;text-align:center}
+  .cui-bar .tag{background:#F3ECFF;color:var(--cui-deep);font-weight:700;
+    padding:1px 7px;border-radius:3px;letter-spacing:.08em}
+  .cui-bar .lab{color:#D9C7FF;font-weight:400;letter-spacing:.16em}
+
+  header{padding:38px 0 26px;border-bottom:1px solid var(--line);margin-bottom:34px}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--cui)}
+  h1{font-family:var(--display);font-size:clamp(30px,4.4vw,46px);font-weight:600;
+    letter-spacing:-.02em;margin:8px 0 6px;line-height:1.02}
+  .sub{color:var(--muted);font-size:15px;max-width:56ch}
+
+  /* hero */
+  .hero{display:grid;grid-template-columns:auto 1fr;gap:40px;align-items:center;
+    background:var(--surface);border:1px solid var(--line);border-radius:16px;
+    padding:34px 36px;margin-bottom:30px}
+  .dial{position:relative;width:196px;height:196px;flex-shrink:0}
+  .dial svg{transform:rotate(-90deg)}
+  .dial .center{position:absolute;inset:0;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;text-align:center}
+  .dial .num{font-family:var(--mono);font-weight:700;font-size:52px;line-height:1;
+    letter-spacing:-.02em}
+  .dial .den{font-family:var(--mono);font-size:14px;color:var(--muted);margin-top:3px}
+  .dial .cap{font-family:var(--mono);font-size:10px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--faint);margin-top:8px}
+  .hero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .stat .k{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+  .stat .v{font-family:var(--display);font-size:34px;font-weight:600;letter-spacing:-.02em}
+  .stat .v small{font-size:16px;color:var(--muted);font-weight:400}
+  .stat .m{background:var(--met)} .stat .p{background:var(--partial)} .stat .g{background:var(--gap)}
+  .stat .swatch{display:inline-block;width:9px;height:9px;border-radius:2px;
+    margin-right:7px;vertical-align:middle}
+  .sprs-note{grid-column:1/-1;font-size:12.5px;color:var(--faint);
+    border-top:1px solid var(--line);padding-top:16px;margin-top:4px}
+  .sprs-note b{color:var(--partial);font-weight:600}
+
+  .section-h{display:flex;align-items:baseline;gap:14px;margin:34px 0 18px}
+  .section-h h2{font-family:var(--display);font-size:21px;font-weight:600;letter-spacing:-.01em}
+  .section-h .idx{font-family:var(--mono);font-size:12px;color:var(--cui);letter-spacing:.12em}
+  .section-h .rule{flex:1;height:1px;background:var(--line)}
+
+  /* family grid */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:12px;
+    padding:16px 17px;transition:border-color .18s,transform .18s}
+  .card:hover{border-color:var(--cui);transform:translateY(-2px)}
+  .card .top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:13px}
+  .card .fam{font-family:var(--mono);font-weight:700;font-size:13px;letter-spacing:.1em;color:var(--cui)}
+  .card .name{font-size:13.5px;color:var(--text);font-weight:500;margin-top:2px}
+  .card .pct{font-family:var(--mono);font-size:20px;font-weight:700}
+  .bar{height:7px;border-radius:4px;background:var(--surface-2);overflow:hidden;
+    display:flex;margin-bottom:11px}
+  .bar i{display:block;height:100%}
+  .bar .met{background:var(--met)} .bar .partial{background:var(--partial)}
+  .legend-row{display:flex;justify-content:space-between;font-family:var(--mono);
+    font-size:11px;color:var(--muted)}
+  .legend-row span b{color:var(--text);font-weight:700}
+
+  /* poam */
+  table{width:100%;border-collapse:collapse;font-size:13.5px}
+  thead th{text-align:left;font-family:var(--mono);font-size:11px;letter-spacing:.13em;
+    text-transform:uppercase;color:var(--muted);font-weight:500;
+    padding:10px 14px;border-bottom:1px solid var(--line)}
+  tbody td{padding:13px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+  tbody tr:hover{background:var(--surface)}
+  .pill{font-family:var(--mono);font-size:11px;font-weight:500;padding:3px 9px;
+    border-radius:20px;letter-spacing:.04em;white-space:nowrap;display:inline-block}
+  .pill.open{background:rgba(224,96,90,.14);color:#F09892;border:1px solid rgba(224,96,90,.3)}
+  .pill.prog{background:rgba(226,169,75,.14);color:#F0C77C;border:1px solid rgba(226,169,75,.3)}
+  .pill.done{background:rgba(70,185,138,.14);color:#7ED9B4;border:1px solid rgba(70,185,138,.3)}
+  .ctrl{font-family:var(--mono);color:var(--cui);font-size:12.5px}
+  .due{font-family:var(--mono);color:var(--muted);font-size:12.5px}
+
+  footer{margin-top:40px;padding-top:20px;border-top:1px solid var(--line);
+    color:var(--faint);font-size:12.5px;display:flex;justify-content:space-between;
+    flex-wrap:wrap;gap:10px}
+  footer .mono{font-family:var(--mono)}
+
+  @media(max-width:720px){
+    .hero{grid-template-columns:1fr;justify-items:center;text-align:center;gap:26px}
+    .hero-stats{grid-template-columns:1fr;width:100%;text-align:left}
+    .sprs-note{text-align:left}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="cui-bar">
+  <span class="tag">CUI</span>
+  <span>CMMC LEVEL 2 // NIST SP 800-171 REV 2 // DFARS 252.204-7012</span>
+  <span class="lab">LAB — SIMULATED, NO REAL CUI</span>
+</div>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Governance · Risk · Compliance</div>
+    <h1>CUI Enclave Readiness</h1>
+    <p class="sub">Continuous self-assessment of the homelab CUI enclave against the
+      110 controls of NIST SP 800-171 Rev 2. Phase 2 (C3PAO) target: 10 Nov 2026.</p>
+  </header>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="dial" aria-label="Controls met dial">
+      <svg width="196" height="196" viewBox="0 0 196 196">
+        <defs>
+          <linearGradient id="ring" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#9B6DDF"/><stop offset="1" stop-color="#46B98A"/>
+          </linearGradient>
+        </defs>
+        <circle cx="98" cy="98" r="84" fill="none" stroke="#1E293B" stroke-width="16"/>
+        <circle id="arc" cx="98" cy="98" r="84" fill="none" stroke="url(#ring)"
+          stroke-width="16" stroke-linecap="round" stroke-dasharray="528" stroke-dashoffset="528"/>
+      </svg>
+      <div class="center">
+        <div class="num" id="metNum">0</div>
+        <div class="den">/ 110 met</div>
+        <div class="cap" id="pctCap">0% implemented</div>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><div class="k"><span class="swatch m"></span>Implemented</div>
+        <div class="v" id="sMet">0</div></div>
+      <div class="stat"><div class="k"><span class="swatch p"></span>Partial / POA&amp;M</div>
+        <div class="v" id="sPart">0</div></div>
+      <div class="stat"><div class="k"><span class="swatch g"></span>Not met</div>
+        <div class="v" id="sGap">0</div></div>
+      <div class="sprs-note">
+        Estimated SPRS score <b id="sprs">—</b> / 110 (conservative floor: every partial or
+        open control counted as a 1-point deduction). The real DoD Assessment Methodology weights
+        certain controls at 3 or 5 points, so your actual score will be <b>lower</b> where
+        5-point controls (e.g. MFA, FIPS crypto, boundary protection) remain open. Confirm weights
+        against the official scoring guide before publishing a number.
+      </div>
+    </div>
+  </div>
+
+  <!-- FAMILIES -->
+  <div class="section-h"><span class="idx">14</span><h2>Control families</h2><div class="rule"></div></div>
+  <div class="grid" id="famGrid"></div>
+
+  <!-- POA&M -->
+  <div class="section-h"><span class="idx">POA&amp;M</span><h2>Open plan of action &amp; milestones</h2><div class="rule"></div></div>
+  <table>
+    <thead><tr><th>Weakness</th><th>Family / Control</th><th>Status</th><th>Target</th></tr></thead>
+    <tbody id="poamBody"></tbody>
+  </table>
+
+  <footer>
+    <span>Homelab GRC dashboard · edit the <span class="mono">DATA</span> object in source to update.</span>
+    <span class="mono" id="stamp"></span>
+  </footer>
+</div>
+
+<script>
+/* ------------------------------------------------------------------ *
+ * EDIT THIS BLOCK as you build. Control counts are fixed at the
+ * 800-171 Rev 2 per-family totals (sum = 110). Set met + partial;
+ * notMet is derived. Keep met+partial <= total.
+ * ------------------------------------------------------------------ */
+const DATA = {
+  families: [
+    {id:'AC', name:'Access Control',              total:22, met:6,  partial:3},
+    {id:'AT', name:'Awareness & Training',        total:3,  met:0,  partial:1},
+    {id:'AU', name:'Audit & Accountability',      total:9,  met:4,  partial:2},
+    {id:'CM', name:'Configuration Management',    total:9,  met:3,  partial:2},
+    {id:'IA', name:'Identification & Auth',       total:11, met:3,  partial:2},
+    {id:'IR', name:'Incident Response',           total:3,  met:1,  partial:1},
+    {id:'MA', name:'Maintenance',                 total:6,  met:2,  partial:0},
+    {id:'MP', name:'Media Protection',            total:9,  met:2,  partial:2},
+    {id:'PS', name:'Personnel Security',          total:2,  met:1,  partial:0},
+    {id:'PE', name:'Physical Protection',         total:6,  met:2,  partial:1},
+    {id:'RA', name:'Risk Assessment',             total:3,  met:0,  partial:1},
+    {id:'CA', name:'Security Assessment',         total:4,  met:1,  partial:1},
+    {id:'SC', name:'System & Comms Protection',   total:16, met:4,  partial:3},
+    {id:'SI', name:'System & Info Integrity',     total:7,  met:2,  partial:2},
+  ],
+  poam: [
+    {weakness:'Multi-factor auth not enforced for local + network access', ctrl:'IA · 3.5.3', status:'open',  target:'2026-08-15'},
+    {weakness:'FIPS-validated cryptography not confirmed on all endpoints', ctrl:'SC · 3.13.11', status:'prog', target:'2026-08-30'},
+    {weakness:'Vulnerability scan cadence not yet operational (OpenVAS)',   ctrl:'RA · 3.11.2', status:'prog', target:'2026-07-31'},
+    {weakness:'Backup restore test not documented',                         ctrl:'MP · 3.8.9',  status:'open',  target:'2026-08-10'},
+    {weakness:'Audit log review procedure drafted, not implemented',        ctrl:'AU · 3.3.1',  status:'prog', target:'2026-08-05'},
+    {weakness:'Security awareness training records incomplete',             ctrl:'AT · 3.2.1',  status:'open',  target:'2026-09-01'},
+  ]
+};
+
+/* ---------- compute ---------- */
+const fam = DATA.families.map(f=>({...f, notMet:Math.max(0,f.total-f.met-f.partial)}));
+const T = fam.reduce((a,f)=>({met:a.met+f.met,partial:a.partial+f.partial,
+  notMet:a.notMet+f.notMet,total:a.total+f.total}),{met:0,partial:0,notMet:0,total:0});
+const pct = Math.round(T.met/T.total*100);
+const sprs = 110 - (T.notMet + T.partial); // conservative unweighted floor
+
+const reduce = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+/* ---------- dial ---------- */
+const arc = document.getElementById('arc');
+const CIRC = 2*Math.PI*84;
+arc.style.strokeDasharray = CIRC;
+requestAnimationFrame(()=>{ arc.style.transition = reduce?'none':'stroke-dashoffset 1.1s ease';
+  arc.style.strokeDashoffset = CIRC*(1 - T.met/T.total); });
+
+/* count-up */
+function countUp(el,to,suffix=''){ if(reduce){el.textContent=to+suffix;return;}
+  let s=null,dur=900; const step=t=>{s??=t; const p=Math.min((t-s)/dur,1);
+    el.textContent=Math.round(p*to)+suffix; if(p<1)requestAnimationFrame(step);};
+  requestAnimationFrame(step);}
+countUp(document.getElementById('metNum'),T.met);
+document.getElementById('pctCap').textContent = pct+'% implemented';
+countUp(document.getElementById('sMet'),T.met);
+countUp(document.getElementById('sPart'),T.partial);
+countUp(document.getElementById('sGap'),T.notMet);
+document.getElementById('sprs').textContent = sprs;
+
+/* ---------- family cards ---------- */
+const grid=document.getElementById('famGrid');
+fam.forEach(f=>{
+  const p=Math.round(f.met/f.total*100);
+  const mW=(f.met/f.total*100), pW=(f.partial/f.total*100);
+  const col = p>=80?'var(--met)':p>=40?'var(--partial)':'var(--gap)';
+  const el=document.createElement('div'); el.className='card';
+  el.innerHTML=`
+    <div class="top">
+      <div><div class="fam">${f.id}</div><div class="name">${f.name}</div></div>
+      <div class="pct" style="color:${col}">${p}<small style="font-size:12px">%</small></div>
+    </div>
+    <div class="bar"><i class="met" style="width:${mW}%"></i><i class="partial" style="width:${pW}%"></i></div>
+    <div class="legend-row">
+      <span><b>${f.met}</b> met</span><span><b>${f.partial}</b> partial</span>
+      <span><b>${f.notMet}</b> open</span><span>${f.total} total</span>
+    </div>`;
+  grid.appendChild(el);
+});
+
+/* ---------- poam ---------- */
+const pb=document.getElementById('poamBody');
+const label={open:'Open',prog:'In progress',done:'Closed'};
+DATA.poam.forEach(r=>{
+  const tr=document.createElement('tr');
+  tr.innerHTML=`<td>${r.weakness}</td><td class="ctrl">${r.ctrl}</td>
+    <td><span class="pill ${r.status}">${label[r.status]}</span></td>
+    <td class="due">${r.target}</td>`;
+  pb.appendChild(tr);
+});
+
+document.getElementById('stamp').textContent =
+  'GENERATED '+new Date().toISOString().slice(0,10).replace(/-/g,'.');
+</script>
+</body>
+</html>
