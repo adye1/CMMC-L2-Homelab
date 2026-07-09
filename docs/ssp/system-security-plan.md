@@ -4,16 +4,16 @@
 **Document version:** 1.0
 **Date:** July 2026
 **Prepared by:** Adam Dye, CISO
-**Classification:** Lab / demonstration — no real CUI or FCI is processed, stored, or transmitted.
+**Classification:** Lab / Demonstration — **no real CUI or FCI is processed, stored, or transmitted.**
 
 ---
 
-## 1. Purpose and honest scope statement
+## 1. Purpose and Scope Statement
 
 This System Security Plan documents a **lab environment** built to demonstrate the
-design, implementation, and *testing* of security controls drawn from **NIST SP
-800-171 Rev 2** (the basis of **CMMC Level 2**), in the context of **DFARS
-252.204-7012**.
+design, implementation, and *testing* of security controls drawn from NIST SP
+800-171 Rev 2 (CMMC Level 2), in the context of DFARS
+252.204-7012.
 
 This is a portfolio and skills-demonstration artifact. It is deliberately honest
 about what it is:
