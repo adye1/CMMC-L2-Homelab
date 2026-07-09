@@ -16,10 +16,7 @@ artifact, not just a checkbox.
 
 ---
 
-## Why this repo is worth a look
-
-Most "I built a homelab" projects stand things up and declare victory. This one is
-about **engineering discipline**:
+## What I Wanted to Do
 
 - **Controls are tested, not assumed.** Every implemented control has a verification
   artifact showing it actually enforces (e.g., an *authorized* user reading the CUI
